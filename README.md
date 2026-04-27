@@ -11,31 +11,58 @@ Protox SDK is a developer-friendly TypeScript toolkit for interacting with Proto
 
 ## Installation
 
+Install the SDK via npm or yarn:
+
 ```bash
 npm install @protox/sdk
+# or
+yarn add @protox/sdk
 ```
-
 ## Quick Start
-
+Here is a complete, end-to-end example demonstrating how to initialize the SDK, authenticate a wallet, and execute core vault operations (deposit, check balance, and withdraw).
 ```typescript
 import { StellarClient, ProtoxVault, PrivateKeyWallet, WalletConnector, NETWORKS } from '@protox/sdk';
 
-// 1. Initialize the client
+// 1. Initialize the Stellar client (Testnet or Mainnet)
 const client = new StellarClient(NETWORKS.TESTNET);
 
-// 2. Connect a wallet
+// 2. Connect a wallet (using a private key for backend/testing, or Freighter/Albedo for frontend)
 const wallet = new WalletConnector(new PrivateKeyWallet('S...'));
 
-// 3. Initialize the vault
-const vault = new ProtoxVault('CD...', client, wallet);
+// 3. Initialize the vault contract instance
+const vaultContractId = 'CD...';
+const vault = new ProtoxVault(vaultContractId, client, wallet);
 
-// 4. Deposit tokens
-await vault.deposit(1000);
+async function manageVault() {
+  try {
+    const userAddress = wallet.getPublicKey();
 
-// 5. Check balance
-const balance = await vault.getBalance('G...');
-console.log(`Current Balance: ${balance}`);
+    // 4. Deposit tokens into the vault
+    console.log('Depositing 1000 tokens...');
+    await vault.deposit(1000);
+
+    // 5. Check your current vault balance
+    const balance = await vault.getBalance(userAddress);
+    console.log(`Current Vault Balance: ${balance}`);
+
+    // 6. Withdraw tokens from the vault
+    console.log('Withdrawing 500 tokens...');
+    await vault.withdraw(500);
+    
+    // Fetch final balance
+    const finalBalance = await vault.getBalance(userAddress);
+    console.log(`Final Vault Balance: ${finalBalance}`);
+
+  } catch (error) {
+    console.error('Vault operation failed:', error);
+  }
+}
+
+manageVault();
 ```
+
+
+
 
 ## Documentation
 
