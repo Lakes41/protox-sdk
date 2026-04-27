@@ -88,3 +88,20 @@ console.log('Withdrawal successful:', result.hash);
 
 - Explore the [Architecture Overview](sdk-overview.md) for deeper integration details.
 - Check out the [Examples](../examples) directory for full-featured scripts.
+
+## Utilities
+
+### Formatting Token Balances
+The SDK provides a safe utility to convert raw smart contract integer balances into readable strings without running into JavaScript floating-point precision issues.
+
+```typescript
+import { formatTokenBalance } from '@protox/sdk';
+
+// Default Stellar formatting (7 decimals)
+const xlmbulance = formatTokenBalance('15000000');
+console.log(xlmbulance); // "1.5"
+
+// Custom decimals (e.g., 18 decimals)
+const customToken = formatTokenBalance('2500000000000000000', 18);
+console.log(customToken); // "2.5"
+```
