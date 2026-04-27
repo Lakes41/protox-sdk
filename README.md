@@ -41,6 +41,7 @@ console.log(`Current Balance: ${balance}`);
 
 - [SDK Overview](docs/sdk-overview.md): Architecture and module breakdown.
 - [Usage Guide](docs/usage-guide.md): Detailed examples and best practices.
+- [Error Handling Guide](docs/error-handling.md): Examples for catching and handling SDK errors.
 
 ## Contributing
 
