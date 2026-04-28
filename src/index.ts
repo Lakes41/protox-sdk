@@ -26,4 +26,4 @@ export function createProtoxVault(
 // TODO: Export helper classes for building custom transactions
 // TODO: Add support for multi-sig and advanced wallet patterns
 
-export { formatTokenBalance } from './utils/format';
+export * from './utils/transactionFetcher';
