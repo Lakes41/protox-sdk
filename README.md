@@ -40,6 +40,7 @@ console.log(`Current Balance: ${balance}`);
 ## Documentation
 
 - [SDK Overview](docs/sdk-overview.md): Architecture and module breakdown.
+- [Configuration Reference](docs/configuration.md): All config options, network setup, RPC override, contract ID, and debug mode.
 - [Usage Guide](docs/usage-guide.md): Detailed examples and best practices.
 - [Wallet Integration](docs/wallet-integration.md): How to connect frontend wallets like Freighter.
 
