@@ -71,10 +71,11 @@ export class ProtoxVault {
   /**
    * Fetches the user's share balance in the vault.
    */
-  async getBalance(userAddress: string): Promise<bigint> {
+  async getBalance(userAddress: string, useCache: boolean = true): Promise<bigint> {
     const result = await this.simulateCall(
       'get_balance',
-      [new Address(userAddress).toScVal()]
+      [new Address(userAddress).toScVal()],
+      useCache
     );
     return scValToNative(result) as bigint;
   }
@@ -82,8 +83,8 @@ export class ProtoxVault {
   /**
    * Fetches the total shares issued by the vault.
    */
-  async getTotalShares(): Promise<bigint> {
-    const result = await this.simulateCall('get_total_shares', []);
+  async getTotalShares(useCache: boolean = true): Promise<bigint> {
+    const result = await this.simulateCall('get_total_shares', [], useCache);
     return scValToNative(result) as bigint;
   }
 
@@ -112,14 +113,18 @@ export class ProtoxVault {
   /**
    * Internal helper for read-only contract calls (simulation).
    */
-  private async simulateCall(functionName: string, args: xdr.ScVal[]): Promise<xdr.ScVal> {
+  private async simulateCall(
+    functionName: string,
+    args: xdr.ScVal[],
+    useCache: boolean = false
+  ): Promise<xdr.ScVal> {
     // We use a dummy address for simulation if no wallet is connected
     const dummyAccount = 'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF';
     const txBuilder = await this.client.buildTransaction(dummyAccount);
     txBuilder.addOperation(this.contract.call(functionName, ...args));
 
     const transaction = txBuilder.build();
-    const simulation = await this.client.simulateTransaction(transaction);
+    const simulation = await this.client.simulateTransaction(transaction, useCache);
     
     if (SorobanRpc.Api.isSimulationError(simulation)) {
       throw new Error(`Simulation failed: ${JSON.stringify(simulation)}`);
