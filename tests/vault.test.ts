@@ -2,7 +2,6 @@ import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { StellarClient, ProtoxVault, NETWORKS } from '../src';
 import { SorobanRpc, xdr, nativeToScVal, Account, Address } from '@stellar/stellar-sdk';
 
-// Mock Stellar SDK components for testing
 jest.mock('@stellar/stellar-sdk', () => {
   const actual = jest.requireActual('@stellar/stellar-sdk') as any;
   return {
@@ -68,6 +67,3 @@ describe('ProtoxVault SDK Tests', () => {
     await expect(vault.deposit(1000n)).rejects.toThrow('Wallet not connected');
   });
 });
-
-// TODO: Implement mock for transaction submission to test deposit/withdraw
-// TODO: Add tests for error handling in case of simulation failure

@@ -10,6 +10,7 @@ import {
   Networks
 } from '@stellar/stellar-sdk';
 import { Network, DEFAULT_NETWORK } from '../utils/networkConfig';
+import { CacheManager, CacheOptions } from '../utils/cacheManager';
 
 /**
  * StellarClient handles low-level interactions with the Stellar Soroban RPC.
@@ -17,10 +18,12 @@ import { Network, DEFAULT_NETWORK } from '../utils/networkConfig';
 export class StellarClient {
   public server: SorobanRpc.Server;
   public network: Network;
+  public cache: CacheManager;
 
-  constructor(network: Network = DEFAULT_NETWORK) {
+  constructor(network: Network = DEFAULT_NETWORK, cacheOptions?: CacheOptions) {
     this.network = network;
     this.server = new SorobanRpc.Server(network.rpcUrl);
+    this.cache = new CacheManager(cacheOptions);
   }
 
   /**
@@ -52,9 +55,26 @@ export class StellarClient {
 
   /**
    * Simulates a contract call to estimate fees and results.
+   * Supports optional caching for read-only calls.
    */
-  async simulateTransaction(transaction: Transaction): Promise<SorobanRpc.Api.SimulateTransactionResponse> {
-    return await this.server.simulateTransaction(transaction);
+  async simulateTransaction(
+    transaction: Transaction,
+    useCache: boolean = false
+  ): Promise<SorobanRpc.Api.SimulateTransactionResponse> {
+    const cacheKey = `simulate:${transaction.toXDR()}`;
+    
+    if (useCache && this.cache.enabled) {
+      const cached = this.cache.get<SorobanRpc.Api.SimulateTransactionResponse>(cacheKey);
+      if (cached) return cached;
+    }
+
+    const response = await this.server.simulateTransaction(transaction);
+
+    if (useCache && this.cache.enabled) {
+      this.cache.set(cacheKey, response);
+    }
+
+    return response;
   }
 
   /**
