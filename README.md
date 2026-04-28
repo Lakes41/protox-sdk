@@ -41,6 +41,7 @@ console.log(`Current Balance: ${balance}`);
 
 - [SDK Overview](docs/sdk-overview.md): Architecture and module breakdown.
 - [Usage Guide](docs/usage-guide.md): Detailed examples and best practices.
+- [Wallet Integration](docs/wallet-integration.md): How to connect frontend wallets like Freighter.
 
 ## Contributing
 
